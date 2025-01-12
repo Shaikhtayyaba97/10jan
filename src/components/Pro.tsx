@@ -3,6 +3,22 @@ import Image from "next/image";
 import Link from "next/link"; // Link ko import karain
 import { urlFor } from "@/sanity/lib/image"; // Ensure this is correctly imported
 
+// TypeScript Interface for Product
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  slug: { current: string };
+  discountPercentage: number;
+  priceWithoutDiscount: number;
+  rating: number;
+  ratingCount: number;
+  tags: string[];
+  sizes: string[];
+  imageUrl: string;
+}
+
 // Assign the component to a variable first
 const SpecificSlugs = async () => {
   // Fetching only specific slugs
@@ -29,7 +45,7 @@ const SpecificSlugs = async () => {
     <div>
       <h1>Products with Specific Slugs (a, c):</h1>
       {query.length > 0 ? (
-        query.map((product: any) => (
+        query.map((product: Product) => (
           <div key={product._id} className="border p-4 m-4">
             <h2 className="text-lg font-bold">{product.name}</h2>
             <p className="text-sm text-gray-600">{product.description}</p>
@@ -45,15 +61,13 @@ const SpecificSlugs = async () => {
             {/* Wrap the image in Link */}
             {product.imageUrl && (
               <Link href={`/groq/${product.slug.current}`}>
-                
-                  <Image
-                    src={urlFor(product.imageUrl).url()}
-                    alt={product.name}
-                    width={200}
-                    height={200}
-                    className="rounded"
-                  />
-                
+                <Image
+                  src={urlFor(product.imageUrl).url()}
+                  alt={product.name}
+                  width={200}
+                  height={200}
+                  className="rounded"
+                />
               </Link>
             )}
 

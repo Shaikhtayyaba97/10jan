@@ -4,8 +4,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react"; // Hooks import karein
 
+// Define a Product interface
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  slug: { current: string };
+  discountPercentage: number;
+  priceWithoutDiscount: number;
+  rating: number;
+  ratingCount: number;
+  tags: string[];
+  sizes: string[];
+  imageUrl: string;
+}
+
 const Products = () => {
-  const [products, setProducts] = useState<any[]>([]); // Products ko store karne ke liye state
+  const [products, setProducts] = useState<Product[]>([]); // Products ko store karne ke liye state
   const [loading, setLoading] = useState<boolean>(true); // Loading ko track karne ke liye state
 
   // Fetching data when the component mounts
@@ -44,7 +60,7 @@ const Products = () => {
 
   return (
     <div>
-      {products.map((product: any) => (
+      {products.map((product) => (
         <div key={product._id} className="product-card">
           <h1>{product.name}</h1>
           <p>{product.price}</p>
