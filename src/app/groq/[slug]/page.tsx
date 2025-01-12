@@ -2,7 +2,6 @@ import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 
-// Fetching product data using async function inside the component
 export default async function ProductPage({ params }: { params: { slug: string } }) {
   // Fetch product details from Sanity using the slug
   const product = await client.fetch(
