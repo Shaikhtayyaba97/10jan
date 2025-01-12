@@ -49,7 +49,7 @@ export default {
     },
     {
       name: 'tags',
-      type: 'array',
+      type: 'image',
       title: 'Tags',
       of: [{ type: 'string' }],
       options: {
@@ -69,14 +69,11 @@ export default {
     },
     {
       name: 'image',
-      type: 'array',
-      title: 'Image',
-      of:[{type:'image',
-        title: 'Image',
-        options: {
-          hotspot: true // Enables cropping and focal point selection
-        }
-      }],
+      type: 'image',
+      title: 'Images',
+      option: {
+        hotspot : true
+      }
      
     }
   ]
