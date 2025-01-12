@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link"; // Link ko import karain
 import { urlFor } from "@/sanity/lib/image"; // Ensure this is correctly imported
 
+// Assign the component to a variable first
 const SpecificSlugs = async () => {
   // Fetching only specific slugs
   const query = await client.fetch(
@@ -66,4 +67,5 @@ const SpecificSlugs = async () => {
   );
 };
 
+// Exporting the component after assigning it to a variable
 export default SpecificSlugs;

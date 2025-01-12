@@ -1,3 +1,7 @@
+
+
+
+
 import Products from "@/components/Groq"
 import SpecificSlug from "@/components/Pro"
 
@@ -8,7 +12,6 @@ export default function Home(){
       <div>
         <SpecificSlug/>
         <Products/>
-        
       </div>
     </div>
   )
