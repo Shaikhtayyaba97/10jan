@@ -2,9 +2,25 @@ import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 
+// Define the Product interface for TypeScript
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  discountPercentage?: number;
+  priceWithoutDiscount?: number;
+  rating: number;
+  ratingCount: number;
+  tags: string[];
+  sizes: string[];
+  imageUrl: string;
+}
+
+// Fetch product data using async function directly inside the page component
 export default async function ProductPage({ params }: { params: { slug: string } }) {
-  // Fetch product details from Sanity using the slug
-  const product = await client.fetch(
+  // Fetching the product details using the slug from Sanity
+  const product: Product = await client.fetch(
     `*[_type == "product" && slug.current == $slug][0] {
       _id,
       name,
@@ -21,7 +37,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
     { slug: params.slug }
   );
 
-  // If no product found
+  // If no product is found, return a "not found" message
   if (!product) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -35,7 +51,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
       <Image
-        src={urlFor(product.imageUrl).url()}
+        src={urlFor(product.imageUrl).url()}  // Correctly generate the image URL
         alt={product.name}
         width={600}
         height={600}
