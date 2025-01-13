@@ -19,7 +19,11 @@ interface Product {
 }
 
 // Dynamic route page component
-export default async function ProductPage({ params }: { params: { slug: string } }) {
+export default async function ProductPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   // Fetch product details by slug
   const product: Product | null = await client.fetch(
     `*[_type == "product" && slug.current == $slug][0] {
@@ -47,17 +51,20 @@ export default async function ProductPage({ params }: { params: { slug: string }
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
       <Image
-        src={urlFor(product.imageUrl).url()}
+        src={product.imageUrl ? urlFor(product.imageUrl).url() : "/placeholder.png"}
         alt={product.name}
         width={600}
         height={600}
         className="rounded-lg"
       />
       <div className="mt-6">
-        <p className="text-lg">Price: <strong>${product.price}</strong></p>
+        <p className="text-lg">
+          Price: <strong>${product.price}</strong>
+        </p>
         {product.discountPercentage && (
           <p className="text-sm text-red-600">
-            Discount: {product.discountPercentage}% (Original: ${product.priceWithoutDiscount})
+            Discount: {product.discountPercentage}% (Original: $
+            {product.priceWithoutDiscount})
           </p>
         )}
         <p className="mt-4 text-gray-700">{product.description}</p>
@@ -77,6 +84,10 @@ export default async function ProductPage({ params }: { params: { slug: string }
 
 // Generate static parameters for dynamic routes
 export async function generateStaticParams() {
-  const slugs: { slug: string }[] = await client.fetch(`*[_type == "product"]{ "slug": slug.current }`);
-  return slugs.map((slug) => ({ slug: slug.slug }));
+  const slugs: { slug: string }[] = await client.fetch(
+    `*[_type == "product"]{ "slug": slug.current }`
+  );
+  return slugs.map((slug) => ({
+    params: { slug: slug.slug },
+  }));
 }
