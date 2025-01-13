@@ -19,7 +19,7 @@ interface Product {
 }
 
 // Dynamic route page component
-export default async function ProductPage({ params }: { params: { slug: string } }) {
+export default async function ProductPage({ params }: { params:Promise <{ slug: string }> }) {
   // Fetch product details by slug
   const product: Product | null = await client.fetch(
     `*[_type == "product" && slug.current == $slug][0] {
