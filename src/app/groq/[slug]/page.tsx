@@ -1,6 +1,7 @@
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 
 // Define the Product interface for TypeScript
 interface Product {
@@ -17,10 +18,20 @@ interface Product {
   imageUrl: string;
 }
 
-// Fetch product data using async function directly inside the page component
+// Fetch product data (runs on the server)
+export async function generateStaticParams() {
+  const slugs: { slug: string }[] = await client.fetch(
+    `*[_type == "product"]{ "slug": slug.current }`
+  );
+
+  return slugs.map((slug) => ({
+    slug: slug.slug,
+  }));
+}
+
 export default async function ProductPage({ params }: { params: { slug: string } }) {
-  // Fetching the product details using the slug from Sanity
-  const product: Product = await client.fetch(
+  // Fetch the product using the slug
+  const product: Product | null = await client.fetch(
     `*[_type == "product" && slug.current == $slug][0] {
       _id,
       name,
@@ -37,21 +48,17 @@ export default async function ProductPage({ params }: { params: { slug: string }
     { slug: params.slug }
   );
 
-  // If no product is found, return a "not found" message
+  // If no product is found, return a 404 page
   if (!product) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <h1 className="text-2xl font-bold text-gray-700">Product not found</h1>
-      </div>
-    );
+    notFound();
   }
 
-  // Render product details
+  // Render the product details
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
       <Image
-        src={urlFor(product.imageUrl).url()}  // Correctly generate the image URL
+        src={urlFor(product.imageUrl).url()}
         alt={product.name}
         width={600}
         height={600}
