@@ -16,12 +16,15 @@ interface Product {
   tags: string[];
   sizes: string[];
   imageUrl: string;
+  slug: {
+    current: string;
+  };
 }
 
 // Dynamic route page component
 export default async function ProductPage({ params }: { params: { slug: string } }) {
-  // Await the params before using them for fetching data
-  const { slug } = await params;
+  // Destructure slug from params
+  const { slug } = params;
 
   // Fetch product details by slug
   const product: Product | null = await client.fetch(
@@ -36,7 +39,8 @@ export default async function ProductPage({ params }: { params: { slug: string }
       ratingCount,
       tags,
       sizes,
-      "imageUrl": image.asset->url
+      "imageUrl": image.asset->url,
+      slug
     }`,
     { slug }
   );
@@ -80,12 +84,12 @@ export default async function ProductPage({ params }: { params: { slug: string }
 
 // Generate static parameters for dynamic routes
 export async function generateStaticParams() {
-  const slugs: { slug: { current: string } }[] = await client.fetch(
+  const products: { slug: { current: string } }[] = await client.fetch(
     `*[_type == "product"]{ "slug": slug.current }`
   );
 
-  // Make sure you return the slug as a string, not an object
-  return slugs.map(({ slug }) => ({
-    slug: slug.current, // Ensure that the slug is just a string, not an object
+  // Return slugs as an array of objects
+  return products.map((product) => ({
+    slug: product.slug.current, // Ensure that the slug is just a string
   }));
 }
