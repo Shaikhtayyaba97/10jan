@@ -20,9 +20,6 @@ interface Product {
 
 // Dynamic route page component
 export default async function ProductPage({ params }: { params: { slug: string } }) {
-  // Await the params before fetching the data
-  const { slug } = params;  // destructure the slug
-
   // Fetch product details by slug
   const product: Product | null = await client.fetch(
     `*[_type == "product" && slug.current == $slug][0] {
@@ -38,7 +35,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
       sizes,
       "imageUrl": image.asset->url
     }`,
-    { slug }  // Pass the slug
+    { slug: params.slug }
   );
 
   // If no product found, show a 404 page
@@ -50,7 +47,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
       <Image
-        src={product.imageUrl ? urlFor(product.imageUrl).url() : "/placeholder.png"}
+        src={urlFor(product.imageUrl).url()}
         alt={product.name}
         width={600}
         height={600}
