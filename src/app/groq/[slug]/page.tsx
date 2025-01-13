@@ -3,7 +3,7 @@ import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-// Define the Product interface for TypeScript
+// Define a Product interface for type safety
 interface Product {
   _id: string;
   name: string;
@@ -18,19 +18,9 @@ interface Product {
   imageUrl: string;
 }
 
-// Fetch product data (runs on the server)
-export async function generateStaticParams() {
-  const slugs: { slug: string }[] = await client.fetch(
-    `*[_type == "product"]{ "slug": slug.current }`
-  );
-
-  return slugs.map((slug) => ({
-    slug: slug.slug,
-  }));
-}
-
+// Dynamic route page component
 export default async function ProductPage({ params }: { params: { slug: string } }) {
-  // Fetch the product using the slug
+  // Fetch product details by slug
   const product: Product | null = await client.fetch(
     `*[_type == "product" && slug.current == $slug][0] {
       _id,
@@ -48,12 +38,11 @@ export default async function ProductPage({ params }: { params: { slug: string }
     { slug: params.slug }
   );
 
-  // If no product is found, return a 404 page
+  // If no product found, show a 404 page
   if (!product) {
     notFound();
   }
 
-  // Render the product details
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
@@ -84,4 +73,10 @@ export default async function ProductPage({ params }: { params: { slug: string }
       </div>
     </div>
   );
+}
+
+// Generate static parameters for dynamic routes
+export async function generateStaticParams() {
+  const slugs: { slug: string }[] = await client.fetch(`*[_type == "product"]{ "slug": slug.current }`);
+  return slugs.map((slug) => ({ slug: slug.slug }));
 }
