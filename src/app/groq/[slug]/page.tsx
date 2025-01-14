@@ -24,7 +24,7 @@ interface Product {
 // Dynamic route page component
 export default async function ProductPage({ params }: { params: { slug: string } }) {
   // Destructure slug from params
-  const { slug } = params;
+  const { slug } =  await params;
 
   // Fetch product details by slug
   const product: Product | null = await client.fetch(
@@ -54,7 +54,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
       <Image
-        src={urlFor(product.imageUrl).url()}
+        src={product.imageUrl}
         alt={product.name}
         width={600}
         height={600}
@@ -87,7 +87,7 @@ export async function generateStaticParams() {
   const products: { slug: { current: string } }[] = await client.fetch(
     `*[_type == "product"]{ "slug": slug.current }`
   );
-
+console.log(products)
   // Return slugs as an array of objects
   return products.map((product) => ({
     slug: product.slug.current, // Ensure that the slug is just a string
