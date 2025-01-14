@@ -1,6 +1,7 @@
 import { client } from "@/sanity/lib/client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { urlFor } from "@/sanity/lib/image";
 
 // Define a Product interface for type safety
 interface Product {
@@ -53,7 +54,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
       <Image
-        src={product.imageUrl}
+        src={urlFor(product.imageUrl).url()}
         alt={product.name}
         width={600}
         height={600}
